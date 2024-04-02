@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: [3.6]
+        python-version: [3.7]
 
     steps:
     - uses: actions/checkout@v2
@@ -31,10 +31,12 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Run pyright
+      run: pyright swimlane
+      continue-on-error: true
     - name: Run Tests
       run: py.test -v --cov=swimlane --cov-report=xml
     - name: Run Codacy Coverage
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
       run: python-codacy-coverage -r coverage.xml
-

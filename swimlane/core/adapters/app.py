@@ -1,15 +1,24 @@
+from typing import List, overload
+
 from swimlane.core.cache import check_cache
 from swimlane.core.resolver import SwimlaneResolver
 from swimlane.core.resources.app import App
 from swimlane.utils import one_of_keyword_only
 
-
 class AppAdapter(SwimlaneResolver):
     """Handles retrieval of Swimlane App resources"""
 
+    @overload
+    def get(self, id: str) -> App:
+        ...
+
+    @overload
+    def get(self, name: str) -> App:
+        ...
+
     @check_cache(App)
     @one_of_keyword_only('id', 'name')
-    def get(self, key, value):
+    def get(self, key, value) -> App: # pyright: ignore [reportInconsistentOverload]
         """Get single app by one of id or name
 
         Supports resource cache
@@ -49,7 +58,7 @@ class AppAdapter(SwimlaneResolver):
             # No matching app found
             raise ValueError('No app with name "{}"'.format(value))
 
-    def list(self):
+    def list(self) -> List[App]:
         """Retrieve list of all apps
 
         Returns:

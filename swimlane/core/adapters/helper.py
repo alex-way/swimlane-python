@@ -1,3 +1,4 @@
+from typing import List, Dict
 import pendulum
 
 from swimlane.core.resolver import SwimlaneResolver
@@ -10,7 +11,7 @@ class HelperAdapter(SwimlaneResolver):
     """Adapter providing any miscellaneous API calls not better suited for another adapter"""
 
     @requires_swimlane_version('2.15')
-    def add_record_references(self, app_id, record_id, field_id, target_record_ids):
+    def add_record_references(self, app_id: str, record_id: str, field_id: str, target_record_ids: List[str]) -> None:
         """Bulk operation to directly add record references without making any additional requests
 
         Warnings:
@@ -33,7 +34,7 @@ class HelperAdapter(SwimlaneResolver):
             }
         )
 
-    def add_comment(self, app_id, record_id, field_id, message, rich_text=False):
+    def add_comment(self, app_id: str, record_id: str, field_id: str, message: str, rich_text: bool = False) -> None:
         """Directly add a comment to a record without retrieving the app or record first
 
         Warnings:
@@ -50,7 +51,7 @@ class HelperAdapter(SwimlaneResolver):
         validate_str(record_id, 'record_id')
         validate_str(field_id, 'field_id')
         validate_str(message, 'message')
-        
+
         if not isinstance(rich_text, bool):
             raise ValueError('rich_text must be a boolean value.')
 
@@ -68,7 +69,7 @@ class HelperAdapter(SwimlaneResolver):
             }
         )
 
-    def check_bulk_job_status(self, job_id):
+    def check_bulk_job_status(self, job_id: str)-> List[Dict]:
         """Check status of bulk_delete or bulk_modify jobs
         .. versionadded:: 2.17.0
         Args:
@@ -78,7 +79,7 @@ class HelperAdapter(SwimlaneResolver):
             :class:`list` of :class:`dict`: List of dictionaries containing job history
 
         """
-        
+
         validate_str(job_id, 'job_id')
 
         return self._swimlane.request('get', "logging/job/{0}".format(job_id)).json()
