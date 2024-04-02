@@ -7,4 +7,4 @@ requests[security]>=2,<3
 six>=1.12.0
 sortedcontainers==2.4.0
 shortid==0.1.2
-typing_extensions==4.10.0
+typing_extensions==4.1.1
