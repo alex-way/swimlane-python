@@ -6,3 +6,4 @@ pytest-pythonpath
 tox
 pytz
 pathlib
+pyright==1.1.356
