@@ -1,23 +1,27 @@
 import weakref
+from typing import TYPE_CHECKING, List
 
 from swimlane.core.resolver import SwimlaneResolver
 from swimlane.core.resources.report import Report, report_factory
 from swimlane.utils.str_validator import validate_str, validate_str_format
 
+if TYPE_CHECKING:
+    from swimlane.core.resources.app import App
+
 class ReportAdapter(SwimlaneResolver):
     """Handles retrieval and creation of Report resources"""
 
-    def __init__(self, app):
+    def __init__(self, app: "App") -> None:
         super(ReportAdapter, self).__init__(app._swimlane)
 
         self.__ref_app = weakref.ref(app)
 
     @property
-    def _app(self):
+    def _app(self) -> "App":
         """Resolve weak app reference"""
         return self.__ref_app()
 
-    def list(self):
+    def list(self) -> List[Report]:
         """Retrieve all reports for parent app
 
         Returns:
@@ -27,7 +31,7 @@ class ReportAdapter(SwimlaneResolver):
 
         return [Report(self._app, raw_report) for raw_report in raw_reports]
 
-    def get(self, report_id):
+    def get(self, report_id: str) -> Report:
         """Retrieve report by ID
 
         Args:
@@ -44,7 +48,7 @@ class ReportAdapter(SwimlaneResolver):
             self._swimlane.request('get', "reports/{0}".format(report_id)).json()
         )
 
-    def build(self, name, **kwargs):
+    def build(self, name: str, **kwargs) -> Report:
         """Report instance factory for the adapter's App
 
         Args:
@@ -58,7 +62,7 @@ class ReportAdapter(SwimlaneResolver):
         """
         valid = lambda input: input is not None and isinstance(input, int) and input >= 0
         limit = kwargs.get('limit', None)
-    
+
         if "limit" in kwargs and not valid(limit):
             raise ValueError('The limit value must be a whole number of zero or above')
 
